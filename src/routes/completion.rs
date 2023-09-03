@@ -12,7 +12,7 @@ pub(crate) async fn completion(
 ) -> Sse<impl Stream<Item = Result<SseEvent, Infallible>>> {
     print!("{:?}", body);
     let prompt = body.prompt;
-    let model: String = body.model;
+    let model: String = "_".to_string();
     let stream = async_stream::stream! {
         let obj = json!(CompletionResponse{
             id: "id".to_string(),

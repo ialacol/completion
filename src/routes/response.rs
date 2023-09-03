@@ -8,10 +8,10 @@ pub enum FinishReason {
 
 #[derive(Serialize, Debug)]
 pub struct Choices {
-    text: String,
-    index: usize,
-    logprobs: Option<()>,
-    finish_reason: Option<FinishReason>,
+    pub text: String,
+    pub index: usize,
+    pub logprobs: Option<()>,
+    pub finish_reason: Option<FinishReason>,
 }
 
 #[derive(Serialize, Debug)]
@@ -23,10 +23,10 @@ pub struct Usage {
 
 #[derive(Serialize, Debug)]
 pub struct CompletionResponse {
-    id: String,
-    object: String,
-    created: u64,
-    model: String,
-    choices: Vec<Choices>,
-    usage: Option<Usage>,
+    pub id: String,
+    pub object: String,
+    pub created: u64,
+    pub model: String,
+    pub choices: Vec<Choices>,
+    pub usage: Option<Usage>,
 }

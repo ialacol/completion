@@ -1,6 +1,5 @@
 use axum::{Router, routing::post};
 use clap::Parser;
-use std::env;
 pub mod routes;
 use crate::routes::completion::completion;
 
@@ -25,7 +24,6 @@ struct Args {
 // 3. Run a server serving the model.
 #[tokio::main]
 async fn main() {
-    let env = env::var("OPENAI_API_KEY").unwrap_or_else(|_| "info".to_string());
     let args: Args = Args::parse();
     let addr = args.host.clone() + ":" + args.port.to_string().as_str();
 
