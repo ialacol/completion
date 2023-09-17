@@ -19,7 +19,7 @@ pub(crate) struct CompletionRequest {
     pub mirostat_mode: Option<usize>,
     pub mirostat_tau: Option<f32>,
     pub mirostat_eta: Option<f32>,
-    pub echo: bool,
+    pub echo: Option<bool>,
     pub stream: bool,
     pub stop: Option<Vec<String>>,
     pub logprobs: Option<usize>,
