@@ -9,9 +9,9 @@ edition = "2021"
 [dependencies]
 async-stream = "0.3.5"
 axum = { version = "0.6.20", features = ["headers"] }
-candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.2.1" }
-candle-nn = { git = "https://github.com/huggingface/candle.git", version = "0.2.2" }
-candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.2.2" }
+candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.3.0" }
+candle-nn = { git = "https://github.com/huggingface/candle.git", version = "0.3.0" }
+candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.3.0" }
 clap = { version = "4.4.2", features = ["derive", "wrap_help"] }
 futures = "0.3.28"
 hf-hub = { version = "0.3.1", features = ["tokio"] }
@@ -19,6 +19,8 @@ serde = "1.0.188"
 serde_json = "1.0.105"
 tokenizers = "0.14.0"
 tokio = { version = "1.32.0", features = ["full"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
 
 [[bin]]
 name = "completion"

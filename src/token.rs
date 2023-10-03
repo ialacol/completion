@@ -1,14 +1,12 @@
-use std::sync::Arc;
-
 use tokenizers::Tokenizer;
 
-pub fn token_to_text(next_token: u32, tokenizer: &Arc<std::sync::Mutex<Tokenizer>>) -> String {
+#[tracing::instrument]
+pub fn token_to_text(next_token: u32, tokenizer: &Tokenizer) -> String {
     // Extracting the last token as a string is complicated, here we just apply some simple
     // heuristics as it seems to work well enough for this example. See the following for more
     // details:
     // https://github.com/huggingface/tokenizers/issues/1141#issuecomment-1562644141
-    let locked_tokenizer = tokenizer.lock().unwrap();
-    if let Some(text) = locked_tokenizer.id_to_token(next_token) {
+    if let Some(text) = tokenizer.id_to_token(next_token) {
         let text = text.replace('▁', " ");
         let ascii = text
             .strip_prefix("<0x")
