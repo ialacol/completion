@@ -12,6 +12,8 @@ use futures::stream::Stream;
 use serde_json::json;
 use std::convert::Infallible;
 use std::time::{SystemTime, UNIX_EPOCH};
+use tracing::{info, Instrument};
+use tracing::info_span;
 
 pub(crate) async fn completion(
     State(state): State<AppState>,
@@ -33,13 +35,18 @@ pub(crate) async fn completion(
             Some(value) => value,
             None => {state.repeat_penalty}
         };
+        let n = match body.n {
+            Some(value) => value,
+            None => 500
+        };
 
         let prompt = body.prompt;
+        info!("prompt: {}", prompt);
 
         let tokens = tokenizer.encode(prompt, true).unwrap();
         let pre_prompt_tokens = vec![];
         let prompt_tokens = [&pre_prompt_tokens, tokens.get_ids()].concat();
-        let to_sample = body.n.unwrap().saturating_sub(1);
+        let to_sample = n;
         let prompt_tokens = if prompt_tokens.len() + to_sample > MAX_SEQ_LEN - 10 {
             let to_remove = prompt_tokens.len() + to_sample + 10 - MAX_SEQ_LEN;
             prompt_tokens[prompt_tokens.len().saturating_sub(to_remove)..].to_vec()
@@ -48,7 +55,7 @@ pub(crate) async fn completion(
         };
         let mut all_tokens: Vec<u32> = vec![];
         let mut logits_processor = LogitsProcessor::new(seed, body.temperature, body.top_p);
-        let mut locked_model_weights = model_weights.lock().await;
+        let mut locked_model_weights = model_weights.lock().instrument(info_span!("model_weights.lock")).await;
         let mut next_token = {
             let input = Tensor::new(prompt_tokens.as_slice(), &Device::Cpu).unwrap().unsqueeze(0).unwrap();
             let logits = locked_model_weights.forward(&input, 0).unwrap();

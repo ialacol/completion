@@ -1,6 +1,5 @@
 use tokenizers::Tokenizer;
 
-#[tracing::instrument]
 pub fn token_to_text(next_token: u32, tokenizer: &Tokenizer) -> String {
     // Extracting the last token as a string is complicated, here we just apply some simple
     // heuristics as it seems to work well enough for this example. See the following for more

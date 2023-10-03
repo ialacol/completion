@@ -1,3 +1,5 @@
+extern crate accelerate_src;
+
 use std::sync::Arc;
 use tracing_subscriber::fmt::format::FmtSpan;
 use tokio::sync::Mutex;
