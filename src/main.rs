@@ -1,7 +1,12 @@
-extern crate accelerate_src;
+#[cfg(feature = "accelerate")]
+extern crate accelerate_src; // cargo run --release --features accelerate
 
 use candle_core::Device;
 use candle_core::Tensor;
+use candle_core::utils::get_num_threads;
+use candle_core::utils::has_accelerate;
+
+use candle_core::utils::has_mkl;
 use candle_transformers::generation::LogitsProcessor;
 use candle_transformers::models::quantized_llama::MAX_SEQ_LEN;
 use tokio::sync::mpsc;
@@ -101,6 +106,13 @@ async fn main() {
         Ok(_) => (),
         Err(error) => panic!("error setting default tracer as `fmt` subscriber {:?}", error),
     };
+    if has_accelerate() {
+        info!("candle was compiled with 'accelerate' support")
+    }
+    if has_mkl() {
+        info!("candle was compiled with 'mkl' support")
+    }
+    info!("number of thread: {:?} used by candle", get_num_threads());
 
     let args = Args::parse();
 
@@ -145,6 +157,7 @@ async fn main() {
         Ok(model_file) => model_file,
         Err(error) => panic!("Failed to open model file {:?}", error)
     };
+    info!("model_filename: {:?}", model_filename);
     let model_content = match info_span!("gguf_file::Content::read").in_scope(|| gguf_file::Content::read(&mut model_file)) {
         Ok(model_content) => model_content,
         Err(error) => panic!("Failed gguf_file::Content::read {:?}", error)
@@ -160,7 +173,7 @@ async fn main() {
         let seed = args.seed;
         let temperature: f64 = args.temperature;
         let top_p = 1.1;
-        let n = 100;
+        let n = 10;
         let repeat_last_n = 64;
         let repeat_penalty = 1.1;
         while let Some(cmd) = receiver.recv().await {

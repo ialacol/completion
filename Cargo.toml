@@ -21,9 +21,13 @@ tokenizers = "0.14.0"
 tokio = { version = "1.32.0", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = "0.3.17"
-intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
-accelerate-src = { version = "0.3.2" }
+intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"], optional = true }
+accelerate-src = { version = "0.3.2", optional = true }
 
 [[bin]]
 name = "completion"
 path = "src/main.rs"
+
+[features]
+default = []
+accelerate = ["dep:accelerate-src", "candle-core/accelerate", "candle-nn/accelerate", "candle-transformers/accelerate"]
